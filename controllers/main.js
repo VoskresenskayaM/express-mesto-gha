@@ -9,5 +9,5 @@ module.exports.getHello = (req, res) => {
 };
 
 module.exports.notFound = (req, res) => {
-  res.send({ message: 'Страница не найдена' });
+  res.status(404).send({ message: 'Страница не найдена' });
 };
