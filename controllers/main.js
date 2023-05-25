@@ -7,3 +7,7 @@ module.exports.getHello = (req, res) => {
     </html>`,
   );
 };
+
+module.exports.notFound = (req, res) => {
+  res.send({ message: 'Страница не найдена' });
+};
