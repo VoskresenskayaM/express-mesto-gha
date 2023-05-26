@@ -5,8 +5,8 @@ const {
 } = require('../controllers/user');
 
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 1,
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many accounts created from this IP, please try again after an hour',
   standardHeaders: true,
   legacyHeaders: false,
