@@ -1,6 +1,5 @@
 const router = require('express').Router();
-const { getHello, notFound } = require('../controllers/main');
+const { notFound } = require('../controllers/main');
 
-router.get('/', getHello);
-router.patch('/*', notFound);
+router.use('/*', notFound);
 module.exports = router;

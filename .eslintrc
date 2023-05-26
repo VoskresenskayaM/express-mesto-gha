@@ -5,6 +5,7 @@
       "error",
       { "allow": ["_id"] }
     ]
-  }
+  },
+  "import/no-extraneous-dependencies": ["error", {"devDependencies": false}]
  }
 

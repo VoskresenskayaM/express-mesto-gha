@@ -2,11 +2,9 @@ const User = require('../models/user');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
-    .catch((err) => res.status(500).send({
+    .then((users) => res.send({ data: users }))
+    .catch(() => res.status(process.env.SERVER_ERROR).send({
       message: 'Произошла ошибка на сервере',
-      err: err.message,
-      stack: err.stack,
     }));
 };
 
@@ -14,26 +12,22 @@ module.exports.getUserById = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
-      if (user) res.status(200).send({ data: user });
+      if (user) res.send({ data: user });
       else {
-        res.status(404).send({
+        res.status(process.env.NOT_FOUND).send({
           message: 'Пользователь не найден',
         });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({
+        res.status(process.env.INCORRECT_ID).send({
           message: 'Некорректный id карточки',
-          err: err.name,
-          stack: err.stack,
         });
         return;
       }
-      res.status(500).send({
+      res.status(process.env.SERVER_ERROR).send({
         message: 'Произошла ошибка на сервере',
-        err: err.name,
-        stack: err.stack,
       });
     });
 };
@@ -41,20 +35,16 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(process.env.INCORRECT_ID).send({
           message: 'Некорректные данные карточки',
-          err: err.name,
-          stack: err.stack,
         });
         return;
       }
-      res.status(500).send({
+      res.status(process.env.SERVER_ERROR).send({
         message: 'Произошла ошибка',
-        err: err.name,
-        stack: err.stack,
       });
     });
 };
@@ -69,20 +59,16 @@ module.exports.updateUser = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(process.env.INCORRECT_ID).send({
           message: 'Некорректные данные пользователя',
-          err: err.name,
-          stack: err.stack,
         });
         return;
       }
-      res.status(500).send({
+      res.status(process.env.SERVER_ERROR).send({
         message: 'Произошла ошибка на сервере',
-        err: err.name,
-        stack: err.stack,
       });
     });
 };
@@ -100,17 +86,13 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
+        res.status(process.env.INCORRECT_ID).send({
           message: 'Некорректные данные пользователя',
-          err: err.name,
-          stack: err.stack,
         });
         return;
       }
-      res.status(500).send({
+      res.status(process.env.SERVER_ERROR).send({
         message: 'Произошла ошибка',
-        err: err.name,
-        stack: err.stack,
       });
     });
 };
