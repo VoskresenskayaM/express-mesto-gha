@@ -1,9 +1,10 @@
 const Card = require('../models/card');
+const { incorrectId, notFound, serverError } = require('../utils')
 
 module.exports.getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(process.env.SERVER_ERROR).send({
+    .catch(() => res.status(serverError).send({
       message: 'Произошла ошибка на сервере',
     }));
 };
@@ -14,21 +15,19 @@ module.exports.deleteCardById = (req, res) => {
     .then((card) => {
       if (card) res.send({ data: card });
       else {
-        res.status(process.env.NOT_FOUND).send({
+        res.status(notFound).send({
           message: 'Карточка не найдена',
         });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректный id карточки',
-          err: err.name,
-          stack: err.stack,
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
+      res.status(serverError).send({
         message: 'Произошла ошибка на сервере',
       });
     });
@@ -40,12 +39,12 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректные данные пользователя',
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
+      res.status(serverError).send({
         message: 'Произошла ошибка на сервере',
       });
     });
@@ -59,19 +58,19 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   .then((card) => {
     if (card) res.send({ data: card });
     else {
-      res.status(process.env.NOT_FOUND).send({
+      res.status(notFound).send({
         message: 'Карточка не найдена',
       });
     }
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(process.env.INCORRECT_ID).send({
+      res.status(incorrectId).send({
         message: 'Некорректные данные карточки',
       });
       return;
     }
-    res.status(process.env.SERVER_ERROR).send({
+    res.status(serverError).send({
       message: 'Произошла ошибка на сервере',
     });
   });
@@ -83,19 +82,19 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
 ).then((card) => {
   if (card) res.send({ data: card });
   else {
-    res.status(process.env.NOT_FOUND).send({
+    res.status(notFound).send({
       message: 'Карточка не найдена',
     });
   }
 })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(process.env.INCORRECT_ID).send({
+      res.status(incorrectId).send({
         message: 'Некорректные данные карточки',
       });
       return;
     }
-    res.status(process.env.SERVER_ERROR).send({
+    res.status(serverError).send({
       message: 'Произошла ошибка на сервере',
     });
   });

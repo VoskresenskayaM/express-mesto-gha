@@ -1,3 +1,4 @@
+const {  notFound } = require('../utils')
 module.exports.notFound = (req, res) => {
-  res.status(process.env.NOT_FOUND).send({ message: 'Страница не найдена' });
+  res.status(notFound).send({ message: 'Страница не найдена' });
 };

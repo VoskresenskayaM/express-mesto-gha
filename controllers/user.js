@@ -1,9 +1,10 @@
 const User = require('../models/user');
+const { incorrectId, notFound, serverError } = require('../utils')
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(process.env.SERVER_ERROR).send({
+    .catch(() => res.status(serverError).send({
       message: 'Произошла ошибка на сервере',
     }));
 };
@@ -14,19 +15,19 @@ module.exports.getUserById = (req, res) => {
     .then((user) => {
       if (user) res.send({ data: user });
       else {
-        res.status(process.env.NOT_FOUND).send({
+        res.status(notFound).send({
           message: 'Пользователь не найден',
         });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректный id карточки',
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
+      res.status(serverError).send({
         message: 'Произошла ошибка на сервере',
       });
     });
@@ -38,13 +39,13 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректные данные карточки',
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
-        message: 'Произошла ошибка',
+      res.status(serverError).send({
+        message: 'Произошла ошибка на сервере',
       });
     });
 };
@@ -62,12 +63,12 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректные данные пользователя',
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
+      res.status(serverError).send({
         message: 'Произошла ошибка на сервере',
       });
     });
@@ -86,13 +87,13 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(process.env.INCORRECT_ID).send({
+        res.status(incorrectId).send({
           message: 'Некорректные данные пользователя',
         });
         return;
       }
-      res.status(process.env.SERVER_ERROR).send({
-        message: 'Произошла ошибка',
+      res.status(serverError).send({
+        message: 'Произошла ошибка на сервере',
       });
     });
 };
