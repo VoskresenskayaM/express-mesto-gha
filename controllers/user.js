@@ -4,13 +4,16 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const NotValidationError = require('../errors/NotValidationError');
-const IncorrectDataError = require('../errors/NoAccessRightsError');
+const IncorrectDataError = require('../errors/IncorrectDataError');
+const IncorrectDataUserError =require('../errors/IncorrectDataUserError')
 const { SECRET_KEY, isExists } = require('../utils');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => {
+    res.send({ data: users })})
     .catch((err) => {
+
       next(err);
     });
 };
