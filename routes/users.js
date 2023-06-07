@@ -1,20 +1,22 @@
 const router = require('express').Router();
-const rateLimit = require('express-rate-limit');
+const { celebrate, Joi } = require('celebrate');
 const {
-  getAllUsers, getUserById, createUser, updateUser, updateUserAvatar,
+  getAllUsers, getUserById, updateUser, updateUserAvatar, getCurrentUser,
 } = require('../controllers/user');
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many accounts created from this IP, please try again after an hour',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
 router.get('/', getAllUsers);
+router.get('/me', getCurrentUser);
 router.get('/:userId', getUserById);
-router.post('/', limiter, createUser);
-router.patch('/me', updateUser);
-router.patch('/me/avatar', updateUserAvatar);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}), updateUser);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().pattern(/https?:\/\/\S+/),
+  }),
+}), updateUserAvatar);
+
 module.exports = router;
