@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     select: false,
     validate: {
       validator(v) {
-        const reg = /[0-9]/;
+        const reg = /[0-9a-zA-Z!@#$%^&*]{6,20}/;
         return reg.test(v);
       },
       message: 'Пароль должен содержать от 6 до 20 символов, в нем можно использовать цифры, символы и буквы латинского алфавита',
@@ -60,13 +60,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new IncorrectDataUserError('Неправильные почта или пароль'));
+       throw new IncorrectDataUserError('Неправильные почта или пароль');
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new IncorrectDataUserError('Неправильные почта или пароль'));
+            throw new IncorrectDataUserError('Неправильные почта или пароль');
           }
 
           return user;

@@ -1,5 +1,6 @@
 const { PORT = 3000 } = process.env;
 const { SECRET_KEY = 'my-secret-key' } = process.env;
+const ok = 200;
 const incorrectId = 400;
 const notFound = 404;
 const serverError = 500;
@@ -8,6 +9,7 @@ const noRights = 403;
 const incorrectEmail = 409;
 const isExists = 11000;
 module.exports = {
+  ok,
   incorrectId,
   notFound,
   serverError,

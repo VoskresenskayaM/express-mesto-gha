@@ -5,13 +5,17 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const NotValidationError = require('../errors/NotValidationError');
 const IncorrectDataError = require('../errors/IncorrectDataError');
-const IncorrectDataUserError =require('../errors/IncorrectDataUserError')
-const { SECRET_KEY, isExists } = require('../utils');
+const IncorrectDataUserError = require('../errors/IncorrectDataUserError')
+const { SECRET_KEY, isExists, ok } = require('../utils');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-    res.send({ data: users })})
+      if(!users) {
+        throw new NotFoundError('Нет пользователей')
+      }
+      res.send({ data: users })
+    })
     .catch((err) => {
 
       next(err);
@@ -24,7 +28,17 @@ module.exports.getUserById = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Нет пользователя с таким id');
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email
+       })})
     .catch((err) => {
       /* if (err.name === 'CastError') */
       if (err instanceof mongoose.CastError) {
@@ -36,10 +50,18 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => {
-      throw new NotFoundError('Нет пользователя с таким id');
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      res.status(ok).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email
+      })
     })
-    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.CastError) {
         next(new NotValidationError('Некорректный id пользователя'));
@@ -55,13 +77,20 @@ module.exports.createUser = (req, res, next) => {
 
   bcrypt.hash(password, 8)
     .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
+      email: email,
       password: hash,
+      name: name,
+      about: about,
+      avatar: avatar,
     })
-      .then((user) => res.send({ data: user }))
+      .then((user) => res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      }
+      ))
       .catch((err) => {
         if (err.code === isExists) {
           next(new IncorrectDataError('Пользователь c таким email уже существует'));
@@ -117,7 +146,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '7d' });
-      res.send({ token });
+      res.status(ok).send({ token });
     })
     .catch(next);
 };

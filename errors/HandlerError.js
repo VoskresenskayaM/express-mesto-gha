@@ -1,6 +1,6 @@
 const { serverError } = require('../utils');
 
-const HandlerError = (err, req, res) => {
+const HandlerError = (err, req, res, next) => {
   const { statusCode = serverError, message } = err;
   res.status(statusCode).send({
     message: statusCode === serverError
