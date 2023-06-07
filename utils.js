@@ -1,5 +1,6 @@
 const { PORT = 3000 } = process.env;
 const { SECRET_KEY = 'my-secret-key' } = process.env;
+const { DB_ADDRESS = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 const ok = 200;
 const incorrectId = 400;
 const notFound = 404;
@@ -19,4 +20,5 @@ module.exports = {
   isExists,
   PORT,
   SECRET_KEY,
+  DB_ADDRESS,
 };

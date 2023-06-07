@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: false,
     validate: {
       validator(v) {
-        /* const reg = /https?\:\/\/[\w\-\.\~\:\/\?\[\]\@\!\$\&\'\(\)\*\+\,\;\=]\#?/g;
+        /* const reg = /https?\:\/\/(w{3})?[a-z0-9\_\-\.\~\:\/\?\[\]\@\!\$\&\'\(\)\*\+\,\;\=]\#?/gi;
         return reg.test(v); */
         return validator.isURL(v);
       },
@@ -60,7 +60,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-       throw new IncorrectDataUserError('Неправильные почта или пароль');
+        throw new IncorrectDataUserError('Неправильные почта или пароль');
       }
 
       return bcrypt.compare(password, user.password)

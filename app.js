@@ -7,7 +7,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const mongoose = require('mongoose');
 const HandlerError = require('./errors/HandlerError');
-const { PORT } = require('./utils');
+const { PORT, DB_ADDRESS } = require('./utils');
 const routes = require('./routes/routes');
 const { createUser, login } = require('./controllers/user');
 const auth = require('./middlewares/auth');
@@ -22,7 +22,7 @@ app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+mongoose.connect(DB_ADDRESS);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({

@@ -5,19 +5,17 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const NotValidationError = require('../errors/NotValidationError');
 const IncorrectDataError = require('../errors/IncorrectDataError');
-const IncorrectDataUserError = require('../errors/IncorrectDataUserError')
 const { SECRET_KEY, isExists, ok } = require('../utils');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      if(!users) {
-        throw new NotFoundError('Нет пользователей')
+      if (!users) {
+        throw new NotFoundError('Нет пользователей');
       }
-      res.send({ data: users })
+      res.send({ data: users });
     })
     .catch((err) => {
-
       next(err);
     });
 };
@@ -25,9 +23,6 @@ module.exports.getAllUsers = (req, res, next) => {
 module.exports.getUserById = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .orFail(() => {
-      throw new NotFoundError('Нет пользователя с таким id');
-    })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
@@ -37,8 +32,9 @@ module.exports.getUserById = (req, res, next) => {
         name: user.name,
         about: user.about,
         avatar: user.avatar,
-        email: user.email
-       })})
+        email: user.email,
+      });
+    })
     .catch((err) => {
       /* if (err.name === 'CastError') */
       if (err instanceof mongoose.CastError) {
@@ -59,8 +55,8 @@ module.exports.getCurrentUser = (req, res, next) => {
         name: user.name,
         about: user.about,
         avatar: user.avatar,
-        email: user.email
-      })
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err instanceof mongoose.CastError) {
@@ -77,11 +73,11 @@ module.exports.createUser = (req, res, next) => {
 
   bcrypt.hash(password, 8)
     .then((hash) => User.create({
-      email: email,
+      email,
       password: hash,
-      name: name,
-      about: about,
-      avatar: avatar,
+      name,
+      about,
+      avatar,
     })
       .then((user) => res.send({
         _id: user._id,
@@ -89,8 +85,7 @@ module.exports.createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-      }
-      ))
+      }))
       .catch((err) => {
         if (err.code === isExists) {
           next(new IncorrectDataError('Пользователь c таким email уже существует'));

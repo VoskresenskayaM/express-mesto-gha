@@ -5,7 +5,11 @@ const {
 } = require('../controllers/card');
 
 router.get('/', getAllCards);
-router.delete('/:cardId', deleteCardById);
+router.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().pattern(/^[\w]{24}$/),
+  }),
+}), deleteCardById);
 
 router.post('/', celebrate({
   body: Joi.object().keys({
@@ -13,6 +17,14 @@ router.post('/', celebrate({
     link: Joi.string().required().pattern(/https?:\/\/\S+/),
   }),
 }), createCard);
-router.put('/:cardId/likes', likeCard);
-router.delete('/:cardId/likes', dislikeCard);
+router.put('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().pattern(/^[\w]{24}$/),
+  }),
+}), likeCard);
+router.delete('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().pattern(/^[\w]{24}$/),
+  }),
+}), dislikeCard);
 module.exports = router;
