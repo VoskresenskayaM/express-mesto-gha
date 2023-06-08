@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const IncorrectDataUserError = require('../errors/IncorrectDataUserError');
+const { regAvatarLink } = require('../utils');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,9 +24,8 @@ const userSchema = new mongoose.Schema({
     required: false,
     validate: {
       validator(v) {
-        /* const reg = /https?\:\/\/(w{3})?[a-z0-9\_\-\.\~\:\/\?\[\]\@\!\$\&\'\(\)\*\+\,\;\=]\#?/gi;
-        return reg.test(v); */
-        return validator.isURL(v);
+        return regAvatarLink.test(v);
+        /* return validator.isURL(v); */
       },
       message: 'Тут должна быть ссылка',
     },

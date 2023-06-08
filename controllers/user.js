@@ -39,8 +39,9 @@ module.exports.getUserById = (req, res, next) => {
       /* if (err.name === 'CastError') */
       if (err instanceof mongoose.CastError) {
         next(new NotValidationError('Некорректный id пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -61,8 +62,9 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.CastError) {
         next(new NotValidationError('Некорректный id пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -89,11 +91,11 @@ module.exports.createUser = (req, res, next) => {
       .catch((err) => {
         if (err.code === isExists) {
           next(new IncorrectDataError('Пользователь c таким email уже существует'));
-        }
-        if (err.name === 'ValidationError') {
+        } else if (err.name === 'ValidationError') {
           next(new NotValidationError('Некорректные данные пользователя'));
+        } else {
+          next(err);
         }
-        next(err);
       }));
 };
 
@@ -112,8 +114,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new NotValidationError('Некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -131,8 +134,9 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new NotValidationError('Некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
