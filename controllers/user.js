@@ -5,7 +5,9 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const NotValidationError = require('../errors/NotValidationError');
 const IncorrectDataError = require('../errors/IncorrectDataError');
-const { SECRET_KEY, isExists, ok } = require('../utils');
+const {
+  SECRET_KEY, isExists, ok, created,
+} = require('../utils');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -81,7 +83,7 @@ module.exports.createUser = (req, res, next) => {
       about,
       avatar,
     })
-      .then((user) => res.send({
+      .then((user) => res.status(created).send({
         _id: user._id,
         name: user.name,
         about: user.about,
@@ -89,6 +91,7 @@ module.exports.createUser = (req, res, next) => {
         email: user.email,
       }))
       .catch((err) => {
+        console.log(err.message);
         if (err.code === isExists) {
           next(new IncorrectDataError('Пользователь c таким email уже существует'));
         } else if (err.name === 'ValidationError') {
