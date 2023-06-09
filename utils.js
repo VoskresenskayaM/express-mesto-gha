@@ -10,7 +10,7 @@ const incorrectUserPasswordOrEmail = 401;
 const noRights = 403;
 const incorrectEmail = 409;
 const isExists = 11000;
-const regAvatarLink = /https?:\/\/(w{3}\.)?[\w-_+&.?~:#@'*!()$;,[\]=/]+#?\.ru([a-zA-Z/])*/;
+const regAvatarLink = /https?:\/\/(w{3}\.)?[\w-_+&.?~:#@'*!()$;,[\]=/]+#?\.\S+/;
 const regEmail = /[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+/;
 const regPassword = /[0-9a-zA-Z!@#$%^&*]{6,20}/;
 const regId = /^[\w]{24}$/;
